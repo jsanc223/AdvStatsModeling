@@ -27,8 +27,7 @@ Find the proportions of people born in the same year and with same sex. That is 
 
 ```{r, warning=TRUE, message=FALSE}
 #Code here
-# Install package Tidyverse and load libraries
-install.packages("tidyverse")
+install.packages('tidyverse', repos = "http://cran.us.r-project.org")
 library(tidyverse)
 library(dplyr)
 # using the pipelines, i created a new column using the mutate function , then declare variable , finally create 
@@ -62,7 +61,9 @@ Create a new data frame while creating a new variable `age` and filter by `age` 
 thresholdAge = 85
 currentYear = 2023
 bbnamesNew = mutate(bbnames, age= currentYear - year) %>% filter(age <= thresholdAge )
-bbnamesNew
+#new dataframe is created. Since there are more than 1576312, I am showing a counter and top of records
+head(bbnamesNew)
+nrow(bbnamesNew)
 ```
 
 ##### Visualization
