@@ -1,7 +1,7 @@
 ---
 title: "Practice 1"
 author: "Jorge Sanchez"
-date: "1-10-23"
+date: "1-13-23"
 output: html_document
 ---
 
@@ -27,19 +27,42 @@ Find the proportions of people born in the same year and with same sex. That is 
 
 ```{r, warning=TRUE, message=FALSE}
 #Code here
+# Install package Tidyverse and load libraries
+install.packages("tidyverse")
+library(tidyverse)
+library(dplyr)
+# using the pipelines, i created a new column using the mutate function , then declare variable , finally create 
+# the year and sex group
+bbnames %>% mutate(bbnames, prop=n/sum(n)) %>% group_by(year,sex)
 ```
 
 Find the most popular, all time, name for each gender (hints: answer for females starts with **M** and males with **J**):
 
+
 ```{r, warning=TRUE, message=FALSE}
 #Code here
+#filter the data to female Then summaries the unique names
+topFemale = bbnames %>% filter(sex=="F") %>% summarise(names = unique(name))
+#we display the string with the variable
+cat("The popular female name is:", topFemale[1,])
 ```
 
-
+```{r, warning=TRUE, message=FALSE}
+#Code here
+#filter the data to male. Then summaries the unique names
+topMale = bbnames %>% filter(sex=="M") %>% summarise(names = unique(name))
+#we display the string with the variable
+cat("The popular male name is:", topMale[1,])
+```
 Create a new data frame while creating a new variable `age` and filter by `age` - Pick a threshold that would keep only people who may still alive (you may use the age expectancy):
 
 ```{r, warning=TRUE, message=FALSE}
 #Code here
+
+thresholdAge = 85
+currentYear = 2023
+bbnamesNew = mutate(bbnames, age= currentYear - year) %>% filter(age <= thresholdAge )
+bbnamesNew
 ```
 
 ##### Visualization
@@ -47,13 +70,37 @@ Create a new data frame while creating a new variable `age` and filter by `age` 
 Use ggplot to plot the distribution of the name *John*. Use geom_bar, geom_line, and facet_wrap to separate females and males.
 ```{r, warning=TRUE, message=FALSE}
 #Code here
+# data visualization
+library(ggthemes)
+library(ggrepel)
+myName <- "John"
+names = bbnames %>% filter(name == myName)
+myPlot = names %>% ggplot(aes(x=year, y = n)) 
+myPlot  + geom_bar(stat = 'identity', aes(fill =sex)) +
+          facet_wrap(~sex) +
+          labs(title ="Bar Plot",
+                 subtitle = "Female and Male population for John ",
+                 x= "Born (Year)",
+                 y ="Population")+
+          theme(plot.title=element_text(hjust=0.5), #Centralize title and sub-title
+          plot.subtitle=element_text(hjust=0.5))
 
 ```
 
 Use ggplot to plot the distribution of the name of your choice. Use geom_bar, geom_line, and facet_wrap to separate females and males.
 ```{r, warning=TRUE, message=FALSE}
 #Code here
-
+myName <- "Mary"
+names = bbnames %>% filter(name == myName)
+myPlot = names %>%ggplot(aes(x=year, y = n)) 
+myPlot  + geom_bar(stat = 'identity', aes(fill =sex)) +
+          facet_wrap(~sex) +
+          labs(title ="Bar Plot",
+                 subtitle = "Female and Male population for Mary",
+                 x= "Born (Year)",
+                 y ="Population")+
+          theme(plot.title=element_text(hjust=0.5), #Centralize title and sub-title
+          plot.subtitle=element_text(hjust=0.5))
 ```
 
 
@@ -66,5 +113,20 @@ We will solve the problem using simulations with R. Simulate the problem and fin
 
 ```{r, warning=TRUE, message=FALSE}
 #Code here
+myFunction = function(n,iter)
+{
+  stds = seq(1,n)
+  dip_receive = numeric(iter)
+  for (i in 1:iter) {
+    diploma = sample(stds,n)
+    dip_receive[i]=sum(stds==diploma)
+  }
+  exp_value = mean(dip_receive)
+  variance = var(dip_receive)
+  list(expected_value = exp_value, variance = variance)
+}
 
+n = 500
+i = 7000
+myFunction(n,i) 
 ```
